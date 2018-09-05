@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Player : MonoBehaviour {
+using UnityEngine.SceneManagement;
+public class Player : MonoBehaviour
+{
 
     public float jumpForce = 10.0f;
     public Rigidbody2D circle;
@@ -13,20 +14,33 @@ public class Player : MonoBehaviour {
     public Color pink;
     public Color purple;
 
-    void Start() {
+    void Start()
+    {
         setRandomColor();
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
         if (Input.GetButtonDown("Jump") || Input.GetMouseButtonDown(0))
         {
             circle.velocity = Vector2.up * jumpForce;
         }
-	}
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.tag);
+        if (collision.tag == "ColorChange")
+        {
+            setRandomColor();
+            Destroy(collision.gameObject);
+            return;
+        }
+
+        if (collision.tag != currentColor)
+        {
+            Debug.Log("You died");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     void setRandomColor()
@@ -36,7 +50,7 @@ public class Player : MonoBehaviour {
         {
             case 0:
                 currentColor = "Blue";
-                sr.color = blue;    
+                sr.color = blue;
                 break;
             case 1:
                 currentColor = "Yellow";
@@ -55,4 +69,3 @@ public class Player : MonoBehaviour {
         }
     }
 }
- 
